@@ -209,6 +209,10 @@ function player_update () {
     }
     guy.setBounceOnWall(true)
 }
+scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
+    sprite.vx = -1 * sprite.vx
+    sprite.setFlag(SpriteFlag.DestroyOnWall, true)
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.ashes, 100)
     info.changeScoreBy(1)
@@ -227,6 +231,67 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let fire: Sprite = null
 let fruit: Sprite = null
 let guy: Sprite = null
+game.setDialogCursor(img`
+    . . b b b f . . 
+    . b f f f f f . 
+    b f f 1 1 f f f 
+    b f 1 f f 1 f c 
+    b f 1 1 1 1 f c 
+    f f 1 f f 1 f c 
+    . f f f f f c . 
+    . . f c c c . . 
+    `)
+game.setDialogFrame(img`
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    dddddddddddddddddddddddddddddddddddddddddddddddd
+    ddd3ddddddddddddddddddddddddddddddddddddd3dddddd
+    ddd3dddddddd3ddddddddddddddddddddd3ddddd33dddddd
+    ddd33ddddddd33dddddddddddddddddddd3dddddd3ddd3dd
+    d333dddddddd3dddddddddddddd3dddddd33dddd333dd3dd
+    d4333dddddd333dddd3dddddddd3ddddd33ddddd33dd33dd
+    d44333dddddd3ddddd3ddddddd333ddddd33ddd3333dd3dd
+    d333dddddd33333ddd33dddddd33dddddd333ddd33dd333d
+    d43333dddd3333ddd3333dddd33333dd333dddd3333d334d
+    d43333dddd3333dddd33dddddd33ddddd333ddd33333333d
+    d3333dddd333333dd3333dddd33333dd3333d33333333334
+    d433dddd333333ddd3333ddd33333ddd3333333333333334
+    4333333dd333333333333333333333333333333333333334
+    433333dd3333333333333333333333333333333333333334
+    433333333333333333333333333333333333333333333334
+    444444444444444444444444444444444444444444444444
+    `)
+game.showLongText("jump and avoid the red bullets while eating the berries :)", DialogLayout.Full)
 info.setScore(0)
 let shadow = sprites.create(img`
     . . . . . . . . 
@@ -509,5 +574,4 @@ game.onUpdateInterval(1000, function () {
         fire.vx = -50
         fire.image.flipX()
     }
-    fire.setFlag(SpriteFlag.DestroyOnWall, true)
 })
