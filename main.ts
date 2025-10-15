@@ -217,7 +217,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
     sprites.destroy(otherSprite, effects.ashes, 100)
     info.changeScoreBy(1)
 })
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+function gameover () {
     if (info.highScore() < info.score()) {
         game.setGameOverEffect(true, effects.confetti)
     } else {
@@ -227,6 +227,17 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     game.setGameOverMessage(true, "GAME OVER!")
     game.setGameOverScoringType(game.ScoringType.HighScore)
     game.gameOver(true)
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    if (sprite.y < otherSprite.y) {
+        if (otherSprite.y - sprite.y < 4) {
+            gameover()
+        }
+    } else {
+        if (sprite.y - otherSprite.y < 4) {
+            gameover()
+        }
+    }
 })
 let fire: Sprite = null
 let fruit: Sprite = null
@@ -323,7 +334,7 @@ guy = sprites.create(img`
     . . . . . f f f f f f . . . . . 
     `, SpriteKind.Player)
 controller.moveSprite(guy, 100, 0)
-guy.setPosition(80, 50)
+guy.setPosition(80, 100)
 scene.setBackgroundImage(img`
     dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
     dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
@@ -567,10 +578,10 @@ game.onUpdateInterval(1000, function () {
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Enemy)
     if (randint(0, 1) == 0) {
-        fire.setPosition(-8, randint(50, 100))
+        fire.setPosition(-8, randint(60, 100))
         fire.vx = 50
     } else {
-        fire.setPosition(168, randint(50, 100))
+        fire.setPosition(168, randint(60, 100))
         fire.vx = -50
         fire.image.flipX()
     }
