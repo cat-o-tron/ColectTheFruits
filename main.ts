@@ -68,7 +68,7 @@ function gameover () {
     game.gameOver(true)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    if (Math.abs(Math.max(otherSprite.y, sprite.y) - Math.min(otherSprite.y, sprite.y)) < 8) {
+    if (Math.abs(Math.max(otherSprite.y, sprite.y) - Math.min(otherSprite.y, sprite.y)) < 4) {
         if (Math.abs(Math.max(otherSprite.x, sprite.x) - Math.min(otherSprite.x, sprite.x)) < 9) {
             gameover()
         }
