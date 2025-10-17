@@ -1,9 +1,17 @@
+namespace SpriteKind {
+    export const effects = SpriteKind.create()
+}
 function player_update () {
     if (guy.y >= 100) {
         guy.y = 100
         guy.vy = 0
         if (controller.A.isPressed() || controller.up.isPressed()) {
-            guy.vy = -150
+            music.play(music.melodyPlayable(music.knock), music.PlaybackMode.InBackground)
+            if (controller.down.isPressed()) {
+                guy.vy = -230
+            } else {
+                guy.vy = -150
+            }
         }
     } else if (guy.vy < 1000) {
         guy.vy += 9.8
@@ -44,8 +52,9 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     sprite.setFlag(SpriteFlag.DestroyOnWall, true)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.ashes, 100)
+    sprites.destroy(otherSprite, effects.ashes, 1)
     info.changeScoreBy(1)
+    music.play(music.melodyPlayable(music.pewPew), music.PlaybackMode.InBackground)
 })
 function gameover () {
     if (info.highScore() < info.score()) {
@@ -53,7 +62,7 @@ function gameover () {
     } else {
         game.setGameOverEffect(true, effects.melt)
     }
-    game.setGameOverPlayable(true, music.melodyPlayable(music.bigCrash), false)
+    game.setGameOverPlayable(true, music.stringPlayable("F E D - - - - - ", 700), false)
     game.setGameOverMessage(true, "GAME OVER!")
     game.setGameOverScoringType(game.ScoringType.HighScore)
     game.gameOver(true)
@@ -67,14 +76,19 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 })
 let fire: Sprite = null
 let fruit: Sprite = null
+let time_last_frame = 0
+let delta = 0
 let guy: Sprite = null
-scene.setBackgroundImage(assets.image`backgroud`)
+let background_effects = sprites.create(assets.image`backgroud`, SpriteKind.effects)
+background_effects.startEffect(effects.clouds)
+background_effects.startEffect(effects.clouds)
+scene.setBackgroundColor(13)
 game.setDialogCursor(assets.image`menu button`)
 game.setDialogFrame(assets.image`menu background`)
 game.splash("Collect the fruits")
 game.showLongText("jump and avoid the red bullets while eating the berries :)", DialogLayout.Full)
 info.setScore(0)
-let shadow = sprites.create(assets.image`shadow`, SpriteKind.Player)
+let shadow = sprites.create(assets.image`shadow`, SpriteKind.effects)
 shadow.y = 106
 guy = sprites.create(assets.image`player`, SpriteKind.Player)
 guy.setFlag(SpriteFlag.ShowPhysics, false)
@@ -83,11 +97,13 @@ guy.setPosition(80, 100)
 game.onUpdate(function () {
     player_update()
     shadow.x = guy.x
-    shadow.setScale(0 / 2, ScaleAnchor.Middle)
+    delta = (game.runtime() - time_last_frame) / 1000
+    time_last_frame = game.runtime()
+    console.logValue("fps", 1 / delta)
 })
 game.onUpdateInterval(700, function () {
     fruit = sprites.create(assets.image`fruit`, SpriteKind.Food)
-    fruit.setPosition(randint(8, 152), -8)
+    fruit.setPosition(randint(25, 135), -8)
     fruit.setVelocity(0, 50)
     animation.runImageAnimation(
     fruit,
