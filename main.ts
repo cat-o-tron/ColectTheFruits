@@ -123,4 +123,5 @@ game.onUpdateInterval(1000, function () {
         fire.vx = -50
         fire.image.flipX()
     }
+    fire.setFlag(SpriteFlag.AutoDestroy, true)
 })
