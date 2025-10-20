@@ -1,9 +1,14 @@
 namespace SpriteKind {
     export const effects = SpriteKind.create()
 }
+function lerp (_from: number, to: number, amount: number) {
+    return _from * (1 - amount) + to * amount
+}
 function player_update () {
+    guy.vx = lerp(guy.vx, controller.dx(1000), 1)
     if (guy.y >= 100) {
         guy.y = 100
+        guy.vx += controller.dx(1) * guy.vy
         guy.vy = 0
         if (controller.A.isPressed() || controller.up.isPressed()) {
             music.play(music.melodyPlayable(music.knock), music.PlaybackMode.InBackground)
@@ -60,7 +65,7 @@ function gameover () {
     if (info.highScore() < info.score()) {
         game.setGameOverEffect(true, effects.confetti)
     } else {
-        game.setGameOverEffect(true, effects.melt)
+        game.setGameOverEffect(true, effects.dissolve)
     }
     game.setGameOverPlayable(true, music.stringPlayable("F E D - - - - - ", 700), false)
     game.setGameOverMessage(true, "GAME OVER!")
@@ -92,7 +97,6 @@ let shadow = sprites.create(assets.image`shadow`, SpriteKind.effects)
 shadow.y = 106
 guy = sprites.create(assets.image`player`, SpriteKind.Player)
 guy.setFlag(SpriteFlag.ShowPhysics, false)
-controller.moveSprite(guy, 100, 0)
 guy.setPosition(80, 100)
 game.onUpdate(function () {
     player_update()
